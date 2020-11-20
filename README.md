@@ -1,24 +1,5 @@
 # spring-boot-start-analysis-ui
 
-## Project setup
-```
-yarn install
-```
+spring boot 应用启动分析 ui
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+主项目地址: [https://github.com/tanghuibo/spring-boot-start-analysis](https://github.com/tanghuibo/spring-boot-start-analysis)
