@@ -13,6 +13,20 @@
             />
           </div>
         </template>
+        <template v-slot:default="{ row }">
+          <div>
+            <div
+              class="progress"
+              :style="{
+                left: `${(row.startTime * 80) / maxEndTime}vw`,
+                width: `${(row.costTime * 80) / maxEndTime}vw`,
+              }"
+            >
+              &nbsp;&nbsp;
+            </div>
+            <div>{{ row.beanName }}</div>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column prop="className" label="class name">
         <template v-slot:header>
@@ -61,7 +75,6 @@ export default {
       className: "",
     },
     data: [],
-    maxCostTime: 1,
   }),
   mounted() {
     this.query();
@@ -85,6 +98,20 @@ export default {
         return true;
       });
     },
+    maxCostTime() {
+      let maxCostTime = 1;
+      this.tableData.forEach((item) => {
+        maxCostTime = Math.max(item.costTime, maxCostTime);
+      });
+      return maxCostTime;
+    },
+    maxEndTime() {
+      let maxEndTime = 1;
+      this.tableData.forEach((item) => {
+        maxEndTime = Math.max(item.endTime, maxEndTime);
+      });
+      return maxEndTime;
+    },
   },
   methods: {
     timeFormat(time) {
@@ -92,18 +119,22 @@ export default {
     },
     async query() {
       this.data = await server.query();
-      this.maxCostTime = 1;
-      this.data.forEach((item) => {
-        if (item.costTime > this.maxCostTime) {
-          this.maxCostTime = item.costTime;
-        }
-      });
     },
   },
 };
 </script>
 
 <style scoped>
+.progress {
+  background: rgba(255, 0, 0);
+  min-width: 1px;
+  position: absolute;
+  opacity: 0.5;
+  z-index: 9999;
+  height: 100%;
+  top: 0;
+  pointer-events: none;
+}
 .title-box {
   display: flex;
 }
