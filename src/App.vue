@@ -40,12 +40,48 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="startTime" sortable label="启动时间" width="120">
+      <el-table-column prop="startTime" sortable label="启动时间" width="250">
+        <template v-slot:header>
+          <div
+            @click="(e) => e.stopPropagation()"
+            class="title-box"
+            style="display: inline-flex; padding-right: 0;"
+          >
+            <span class="title-text">
+              启动时间
+            </span>
+            <el-input
+              v-model="quertForm.startTime"
+              style="width: 100px;"
+              size="mini"
+              placeholder="单位 ms"
+              class="title-input"
+            />
+          </div>
+        </template>
         <template v-slot:default="{ row }">
           {{ `${timeFormat(row.startTime)}` }}
         </template>
       </el-table-column>
-      <el-table-column prop="endTime" sortable label="结束时间" width="120">
+      <el-table-column prop="endTime" sortable label="结束时间" width="250">
+        <template v-slot:header>
+          <div
+            @click="(e) => e.stopPropagation()"
+            class="title-box"
+            style="display: inline-flex; padding-right: 0;"
+          >
+            <span class="title-text">
+              结束事件
+            </span>
+            <el-input
+              v-model="quertForm.endTime"
+              style="width: 100px;"
+              size="mini"
+              placeholder="单位 ms"
+              class="title-input"
+            />
+          </div>
+        </template>
         <template v-slot:default="{ row }">
           {{ `${timeFormat(row.endTime)}` }}
         </template>
@@ -55,7 +91,12 @@
           {{ `${timeFormat(row.costTime)}` }}
           <el-progress
             :show-text="false"
-            :percentage="parseInt((row.costTime * 100) / this.maxCostTime)"
+            v-if="
+              maxCostTime != null && maxCostTime != 0 && row.costTime != null
+            "
+            :percentage="
+              Math.min(100, parseInt((row.costTime * 100) / maxCostTime))
+            "
           ></el-progress>
         </template>
       </el-table-column>
@@ -73,15 +114,37 @@ export default {
     quertForm: {
       beanName: "",
       className: "",
+      startTime: "",
+      endTime: "",
     },
     data: [],
   }),
   mounted() {
     this.query();
+    this.$nextTick(() => {
+      this.quertForm.startTime = "";
+      this.quertForm.endTime = "";
+    });
   },
   computed: {
     tableData() {
+      console.log("in computed");
       return this.data.filter((item) => {
+        if (
+          this.quertForm.startTime != null &&
+          this.quertForm.startTime != ""
+        ) {
+          if (item.startTime < this.quertForm.startTime) {
+            return false;
+          }
+        }
+
+        if (this.quertForm.endTime != null && this.quertForm.endTime != "") {
+          if (item.endTime > this.quertForm.endTime) {
+            return false;
+          }
+        }
+
         if (this.quertForm.beanName != null && this.quertForm.beanName != "") {
           if (item.beanName.indexOf(this.quertForm.beanName) < 0) {
             return false;
@@ -114,6 +177,9 @@ export default {
     },
   },
   methods: {
+    clickTest(test) {
+      console.log("1111", test);
+    },
     timeFormat(time) {
       return utils.timeFormat(time);
     },
