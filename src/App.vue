@@ -51,7 +51,7 @@
               启动时间
             </span>
             <el-input
-              v-model="quertForm.startTime"
+              v-model.number="quertForm.startTime"
               style="width: 100px;"
               size="mini"
               placeholder="单位 ms"
@@ -71,10 +71,10 @@
             style="display: inline-flex; padding-right: 0;"
           >
             <span class="title-text">
-              结束事件
+              结束时间
             </span>
             <el-input
-              v-model="quertForm.endTime"
+              v-model.number="quertForm.endTime"
               style="width: 100px;"
               size="mini"
               placeholder="单位 ms"
@@ -87,6 +87,24 @@
         </template>
       </el-table-column>
       <el-table-column prop="costTime" sortable label="花费时间" width="300">
+        <template v-slot:header>
+          <div
+            @click="(e) => e.stopPropagation()"
+            class="title-box"
+            style="display: inline-flex; padding-right: 0;"
+          >
+            <span class="title-text">
+              花费时间
+            </span>
+            <el-input
+              v-model.number="quertForm.costTime"
+              style="width: 100px;"
+              size="mini"
+              placeholder="单位 ms"
+              class="title-input"
+            />
+          </div>
+        </template>
         <template v-slot:default="{ row }">
           {{ `${timeFormat(row.costTime)}` }}
           <el-progress
@@ -116,6 +134,7 @@ export default {
       className: "",
       startTime: "",
       endTime: "",
+      costTime: ""
     },
     data: [],
   }),
@@ -141,6 +160,12 @@ export default {
 
         if (this.quertForm.endTime != null && this.quertForm.endTime != "") {
           if (item.endTime > this.quertForm.endTime) {
+            return false;
+          }
+        }
+
+        if (this.quertForm.costTime != null && this.quertForm.costTime != "") {
+          if (item.costTime < this.quertForm.costTime) {
             return false;
           }
         }
